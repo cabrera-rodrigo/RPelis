@@ -1,0 +1,53 @@
+﻿@using APP_PELIS.Models
+@model OlvideContraseñaViewModel
+@{
+    ViewData["Title"] = "Recuperar Contraseña";
+}
+<main class="flex-grow-1 d-flex align-items-center justify-content-center py-5">
+<div class="container">
+    <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5 col-xl-4">
+                <div class="card shadow-lg border-0 rounded-3">
+                    <div class="card-body p-4 p-sm-5">
+                        <h2 class="card-title text-center mb-4 h3">¿Olvidaste tu clave?</h2>
+                    <p class="text-muted text-center mb-4">
+                        Ingresa tu correo electrónico y te enviaremos un enlace para que puedas restablecerla.
+                    </p>
+
+                    @if (ViewBag.Mensaje != null)
+                    {
+                        <div class="alert alert-success border-0 shadow-sm" role="alert">
+                            <i class="bi bi-check-circle-fill me-2"></i> @ViewBag.Mensaje
+                        </div>
+                        <div class="text-center mt-3">
+                            <a asp-action="Login" class="btn btn-link text-decoration-none">Volver al inicio de sesión</a>
+                        </div>
+                    }
+                    else
+                    {
+                        <form asp-action="OlvideContraseña" method="post">
+                            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+                            <div class=" mb-3">
+                                <label asp-for="Email"></label>
+                                    <input asp-for="Email" class="form-control form-control-lg" placeholder="ejemplo@correo.com" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">Enviar enlace</button>
+                                <a asp-action="Login" class="btn btn-light">Cancelar</a>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,199 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Usuario> SignInManager
+@inject UserManager<Usuario> UserManager
+@model Pelicula
+@{
+    int horas = Model.MinutosDuracion / 60;
+    int minutos = Model.MinutosDuracion % 60;
+    int año = Model.FechaLanzamiento.Year;
+
+    var totalReviews = Model.ListaReviews.Count();
+    var promedio = totalReviews > 0 ? Model.ListaReviews.Average(r => r.Rating) : 0;
+
+    double CalcularPorcentaje(int estrellas)
+    {
+        if (totalReviews == 0) return 0;
+        var conteo = Model.ListaReviews.Count(r => r.Rating == estrellas);
+        return (double)conteo / totalReviews * 100;
+    }
+}
+<main class="container my-4">
+    <div class="row g-4 g-lg-5">
+        <div class="col-lg-4">
+            <img alt="@Model.Titulo" class="img-fluid rounded-3 shadow-lg" src="@Model.PosterUrl" />
+        </div>
+        <div class="col-lg-8">
+            <h1 class="display-5 fw-bold">@Model.Titulo</h1>
+            <p class="text-muted">@Model.Genero.Descripcion | @horas h @minutos m | @año</p>
+            <p class="lead">@Model.Sinopsis</p>
+            <div class="card bg-light border p-4 my-4">
+                <div class="row align-items-center">
+                    <div class="col-sm-4 text-center text-sm-start">
+                        <p class="display-2 fw-bolder text-dark mb-0">@promedio.ToString("0.0")</p>
+                        <div class="text-primary">
+                            @for (int i = 1; i<= 5; i++)
+                            {
+                                if (i <= Math.Floor(promedio))
+                                {
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">star</span>
+                                }
+                                else if (i == Math.Ceiling(promedio) && promedio % 1 != 0) {
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">star_half</span>
+                                } else {
+                                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0">star</span>
+                                } 
+                            }
+                        </div>
+
+                        <p class="text-muted mb-0">@totalReviews Reviews</p>
+                    </div>
+                    <div class="col-sm-8 mt-3 mt-sm-0">
+                        <div class="row align-items-center gx-2 gy-1">
+                            @for (int i = 5; i >= 1; i--)
+                            {
+                                var porc = CalcularPorcentaje(i);
+                                <div class="col-1 text-end text-dark fw-medium">@i</div>
+                                <div class="col-9">
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar" role="progressbar"
+                                             style="width: @porc.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)% "
+                                             aria-valuenow="@porc.ToString("0.0", System.Globalization.CultureInfo.InvariantCulture)" 
+                                             aria-valuemin="0" aria-valuemax="100">
+                                         </div>
+                                    </div>
+                                </div>
+                                <div class="col-2 text-muted text-end">@Math.Round(porc)%</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @* Botones de acción *@
+            <div class="d-grid gap-3 d-sm-flex my-4">
+                <button @(ViewBag.UserReview ? "disabled" : "") class="btn btn-secondary btn-lg d-flex align-items-center justify-content-center gap-2"
+                        type="button" data-bs-toggle="modal" data-bs-target="#createReviewModal">
+                    <span class="material-symbols-outlined">add_notes</span>
+                    <span>Crear Reseña</span>
+                </button>
+            </div>
+
+            @*  Mostrar mensajes de éxito o error  *@
+            @if (TempData["ReviewExiste"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["ReviewExiste"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @* reviews *@
+            <div class="mt-5">
+                <h2 class="h3 fw-bold mb-4">Reviews</h2>
+                <div class="list-group">
+                    @foreach (var item in Model.ListaReviews)
+                    {
+                        <div class="list-group-item bg-dark text-light border-secondary review-card p-4 mb-3">
+                            <div class="d-flex align-items-center mb-3">
+                                <img alt="@item.Usuario.Nombre" class="rounded-circle me-3" height="40"
+                                     src="@(string.IsNullOrEmpty(item.Usuario.ImagenPerfilUrl) ? "/images/default-avatar.png" : item.Usuario.ImagenPerfilUrl)"
+                                     onerror="this.src='/images/default-avatar.png'" width="40" />
+                                <div>
+                                    <h5 class="mb-0 text-light">@string.Concat(item.Usuario.Nombre, " ", item.Usuario.Apellido)</h5>
+                                    <small class="">@item.FechaReview.ToShortDateString()</small>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= item.Rating)
+                                    {
+                                        <span class="material-symbols-outlined star-filled">star</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="material-symbols-outlined star-empty">grade</span>
+                                    }
+                                }
+                            </div>
+                            <p class="mb-3">@item.Comentario</p>
+
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                @if (UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Admin").Result)
+                                {
+                                    <a asp-controller="Review" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-2">
+                                        <span class="material-symbols-outlined">edit</span> Editar
+                                    </a>
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+            <hr />
+            @if (ViewBag.Relacionadas != null && ((IEnumerable<dynamic>)ViewBag.Relacionadas).Any())
+            {
+            <div class="container mt-5">
+                <h3 class="mb-4">Películas similares</h3>
+                <div class="row row-cols-1 row-cols-md-4 g-4">
+                    @foreach (var peli in ViewBag.Relacionadas)
+                    {
+                        <div class="col">
+                                <div class="card card-hover h-100 shadow-sm border-0">
+                                <img src="@peli.PosterUrl" class="card-img-top" alt="@peli.Titulo" style="height: 250px; object-fit: cover;">
+                                <div class="card-body ">
+                                    <h6 class="card-title text-truncate">@peli.Titulo</h6>
+                                        <a asp-action="Details" asp-route-id="@peli.Id" class="btn btn-sm btn-outline-primary w-100">
+                                            <span class="material-symbols-outlined">visibility</span>
+                                        </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+
+
+
+    
+
+
+</main>
+
+@{
+    var reviewViewModel = new ReviewCreateViewModel
+    {
+        PeliculaId = Model.Id,
+        PeliculaTitulo = Model.Titulo
+    };
+}
+
+<partial name="~/Views/Review/_CreateReview.cshtml" model="reviewViewModel"/>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $(document).ready(function () {
+            $('form').submit(function (e) {
+                var ratingSeleccionado = $('input[name="Rating"]:checked').val();
+
+                if (!ratingSeleccionado || ratingSeleccionado == "0") {
+                    e.preventDefault();
+
+                    $('[data-valmsg-for="Rating"]')
+                        .text("La calificación es obligatoria")
+                        .addClass("field-validation-error")
+                        .removeClass("field-validation-valid");
+                }
+            });
+
+            $('input[name="Rating"]').change(function () {
+                $('[data-valmsg-for="Rating"]').text("").addClass("field-validation-valid").removeClass("field-validation-error");
+            });
+        });
+    </script>
+
+}

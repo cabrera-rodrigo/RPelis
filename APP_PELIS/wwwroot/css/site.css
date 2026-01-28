@@ -1,0 +1,135 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+/* Estilos para las tarjetas de películas en modo oscuro */
+[data-bs-theme="dark"] .card {
+    background-color: #495057 !important;
+    border-color: #6c757d !important;
+}
+
+[data-bs-theme="dark"] .card-title {
+    color: #f8f9fa !important;
+}
+
+[data-bs-theme="dark"] .card-body .text-muted {
+    color: #dee2e6 !important;
+}
+
+/* Lupa para input de busqueda*/
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24
+}
+
+/* Estrellas de rating */
+.rating-stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.rating-stars input[type="radio"] {
+    display: none;
+}
+
+.rating-stars label {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+    .rating-stars input[type="radio"]:checked ~ label,
+    .rating-stars label:hover,
+    .rating-stars label:hover ~ label {
+        color: #ffc107;
+    }
+
+/* movimiento cards*/
+.card-hover {
+    transition: transform 0.2s ease-in-out;
+}
+
+    .card-hover:hover {
+        transform: translateY(-5px); /* Efectro de la tarjeta al pasar el mouse */
+    }
+
+/* Estrella rating detalles*/
+.star-filled {
+    color: #ffc107;
+}
+
+.star-empty {
+    color: #6c757d;
+}
+
+.material-symbols-outlined {
+    /* Esto permite que el icono pueda rellenarse */
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    display: inline-block;
+    vertical-align: middle;
+}
+/* Las estrellas vacías deben tener FILL 0 */
+.star-empty {
+    font-variation-settings: 'FILL' 0 !important;
+}
+/* Estrellas de review*/
+.rating-stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+}
+
+.rating-stars input[type="radio"] {
+    display: none;
+}
+
+.rating-stars label {
+    font-size: 2rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rating-stars input[type="radio"]:checked ~ label,
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+    color: #ffc107;
+}
+/* Estrellas mi review*/
+.star-filled {
+    color: #ffc107;
+}
+
+.star-empty {
+    color: #6c757d;
+}

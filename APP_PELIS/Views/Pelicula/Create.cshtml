@@ -1,0 +1,64 @@
+﻿@model APP_PELIS.Models.Pelicula
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+
+<h1>Crear nueva</h1>
+
+<h4>Pelicula</h4>
+<hr />
+<div class="row">
+
+    <div class="col-6">
+        <form class="row g-3" asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group col-md-12">
+                <label asp-for="Titulo" class="control-label"></label>
+                <input asp-for="Titulo" class="form-control" />
+                <span asp-validation-for="Titulo" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-12">
+                <label asp-for="Sinopsis" class="control-label"></label>
+                <textarea class="form-control" asp-for="Sinopsis" ></textarea>
+                <span asp-validation-for="Sinopsis" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="FechaLanzamiento" class="control-label"></label>
+                <input asp-for="FechaLanzamiento" class="form-control" />
+                <span asp-validation-for="FechaLanzamiento" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                <label asp-for="MinutosDuracion" class="control-label"></label>
+                <input asp-for="MinutosDuracion" class="form-control"/>
+                <span asp-validation-for="MinutosDuracion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PosterUrl" class="control-label"></label>
+                <input asp-for="PosterUrl" class="form-control" />
+                <span asp-validation-for="PosterUrl" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-6">
+                Género
+                <select asp-for="GeneroId" class ="form-select" asp-items="ViewBag.GeneroId"></select>
+            </div>
+            <div class="form-group col-md-6">
+                Plataforma
+                <select asp-for="PlataformaId" class ="form-select" asp-items="ViewBag.PlataformaId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Agregar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-primary">Volver atrás</a>
+            </div>
+        </form>
+    </div>
+   
+    </div>
+
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

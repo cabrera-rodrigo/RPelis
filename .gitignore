@@ -1,0 +1,14 @@
+# === Secretos y Configuración Local ===
+appsettings.Development.json
+UserSecrets/
+
+# === Archivos de Compilación (Basura que no sirve en Git) ===
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# === Archivos de Publicación ===
+publish/
+*.pubxml

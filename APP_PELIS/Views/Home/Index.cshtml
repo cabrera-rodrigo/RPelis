@@ -1,0 +1,126 @@
+﻿@using APP_PELIS.Models
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Usuario> SignInManager
+@model List<Pelicula>
+@{
+    ViewData["Title"] = "Home Page";
+    var currentPage = ViewBag.CurrentPage as int? ?? 1;
+    var totalPages = ViewBag.TotalPages as int? ?? 1;
+    var busqueda = ViewBag.TxtBusqueda ?? ""; // Obtener el valor de búsqueda actual
+    var generoId = ViewBag.GeneroId ?? 0; // Obtener el valor de género actual
+
+}
+
+<main class="flex-grow-1">
+    <div class="container py-4">
+        @* PANEL DE FILTROS *@
+        <form method="get">
+            <div class="row g-3 mb-4 align-items-center">
+                <div class="col-lg-6">
+                    <div class="input-group">
+                        <button type="submit" class="btn btn-outline-secondary input-group-text material-symbols-outlined"> search </button>
+                        <input name="txtBusqueda" value="@busqueda" class="form-control" placeholder="Buscar películas..." type="text" />
+                        <input type="hidden" name="page" value="@currentPage" />
+                    </div>
+                </div>
+                <div class="col-lg-6 d-flex flex-wrap gap-2 justify-content-lg-end">
+                    <div class="dropdown ">
+                        <select name="generoId" asp-items="@ViewBag.GeneroId" class="form-select  btn btn-outline-secondary text-lg-start"
+                                onchange="this.form.submit()"></select>
+                    </div>
+                    <div class="dropdown ">
+                        <select name="ordenarPor" class="form-select btn btn-outline-secondary text-lg-start px-4"
+                                onchange="this.form.submit()">
+                            <!option value="" @(ViewBag.CurrentSort == "" ? "selected" : "")>Ordenar por...</!option>
+                            <!option value="rating_desc" @(ViewBag.CurrentSort == "rating_desc" ? "selected" : "")>Mejores</!option>
+                            <!option value="rating_asc" @(ViewBag.CurrentSort == "rating_asc" ? "selected" : "")>Peores</!option>
+                            <!option value="titulo_desc" @(ViewBag.CurrentSort == "titulo_desc" ? "selected" : "")>Título: Z-A</!option>
+                        </select>
+                    </div>
+                    <a asp-action="Index" class="btn btn-outline-danger material-symbols-outlined" title="Limpiar filtros">
+                        filter_alt_off
+                    </a>
+                </div>
+            </div>
+        </form>
+        <div id="contenedor-peliculas">
+            @* LISTADO *@
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
+
+                @foreach (var pelicula in Model)
+                {
+                    var totalReviews = pelicula.ListaReviews?.Count ?? 0;
+                    var promedio = totalReviews > 0 ? pelicula.ListaReviews.Average(r => r.Rating) : 0;
+
+                    <div class="col">
+                        
+                        <div class="card h-100 border-0 card-hover shadow-sm">
+                            <a asp-action="Details" asp-route-id="@pelicula.Id">
+                                <div class="position-relative">
+                                    <img alt="@pelicula.Titulo" class="card-img-top" src="@pelicula.PosterUrl" />
+                                </div>
+                            </a>
+                            <div class="card-body p-2 align-content-sm-end">
+                                <h5 class="card-title fs-6 fw-semibold mb-1">@pelicula.Titulo</h5>
+                                <div class="d-flex align-baseline-items-center text-muted small">
+                                    <span class="material-symbols-outlined text-warning me-1" style="font-size: 1rem;"> star </span>
+                                    <span>@promedio.ToString("0.0")</span>
+                                </div>
+                        
+                                @if (SignInManager.IsSignedIn(User))
+                                {
+                                    var esFavorito = ((List<int>)ViewBag.FavoritosIds).Contains(pelicula.Id);
+                                    <div>
+                                        <form asp-controller="Favorito" asp-action="AgregarFavorito" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="peliculaId" value="@pelicula.Id" />
+                                            @if(esFavorito)
+                                            {
+                                            <div class="float-end">
+                                                <button type="submit" class="btn btn-outline-danger">
+                                                    Quitar favorito
+                                                </button>
+                                            </div>
+                                            }
+                                            else
+                                            {
+                                            <div class="float-end">
+                                                <button type="submit" class="btn btn-outline-warning">
+                                                    Agregar a favoritos
+                                                </button>
+                                            </div>
+                                            }
+                                        </form>
+                                    </div>
+                                    
+                                    
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+            @* PAGINADO *@
+            <nav aria-label="Paginación" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                        <a asp-action="Index" class="page-link" asp-route-page="@(currentPage - 1)" asp-route-txtBusqueda="@busqueda" asp-route-generoId="@ViewBag.SelectedGeneroId" asp-route-ordenarPor="@ViewBag.CurrentSort">Anterior</a>
+                    </li>
+
+                    @for (int p = 1; p <= totalPages; p++)
+                    {
+                        <li class="page-item @(p == currentPage ? "active" : "")">
+                            <a asp-action="Index" asp-route-page="@p" asp-route-txtBusqueda="@busqueda" class="page-link" asp-route-generoId="@ViewBag.SelectedGeneroId" asp-route-ordenarPor="@ViewBag.CurrentSort">@p</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                        <a asp-action="Index" class="page-link" asp-route-page="@(currentPage + 1)" asp-route-txtBusqueda="@busqueda" asp-route-generoId="@ViewBag.SelectedGeneroId" asp-route-ordenarPor="@ViewBag.CurrentSort">Siguiente</a>
+                    </li>
+                </ul>
+
+            </nav>
+        </div>
+    </div>
+</main>

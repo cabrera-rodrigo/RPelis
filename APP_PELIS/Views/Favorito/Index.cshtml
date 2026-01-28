@@ -1,0 +1,34 @@
+﻿
+@model IEnumerable<APP_PELIS.Models.Pelicula>
+@{
+}
+<h2 class="h3 fw-bold mb-4">Mis Favoritos</h2>
+
+<div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col"> 
+            <div class="card h-100 border-0 shadow-sm">
+                <a asp-action="Details" asp-controller="Home" asp-route-id="@item.Id">
+                    <div class="position-relative">
+                        <img alt="@item.Titulo" class="card-img-top" src="@item.PosterUrl" />
+                    </div>
+                </a>
+                <div class="card-body p-2 align-content-sm-end">
+                    <h5 class="card-title fs-6 fw-semibold mb-1">@item.Titulo</h5>
+                    <div class="d-flex align-baseline-items-center text-muted small">
+                        <span class="material-symbols-outlined text-warning me-1" style="font-size: 1rem;"> star </span>
+                        <span>4.5</span>
+                    </div>
+                    <form asp-controller="Favorito" asp-action="EliminarFavorito" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="peliculaId" value="@item.Id" />
+                            <div class="float-end">
+                                <button type="submit" class="btn btn-outline-danger">Quitar favorito</button>
+                            </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>

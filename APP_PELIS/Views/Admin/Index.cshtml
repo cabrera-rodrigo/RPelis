@@ -1,0 +1,118 @@
+﻿<div class="container mt-4">
+    <h2 class="mb-4">Panel de Administración - RPelis</h2>
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card card-hover text-white mb-3 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <span class="material-symbols-outlined" style="font-size: 40px;">star</span>
+                        <div class="text-end">
+                            <h6 class="card-title">Top Película</h6>
+                            <h4>@ViewBag.MejorPelicula</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-hover text-white mb-3 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <span class="material-symbols-outlined" style="font-size: 40px;">person</span>
+                        <div class="text-end">
+                            <h6 class="card-title">Total Usuarios</h6>
+                            <h4>+@ViewBag.TotalUsuarios</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-hover text-white  mb-3 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <span class="material-symbols-outlined" style="font-size: 40px;">reviews</span>
+                        <div class="text-end">
+                            <h6 class="card-title">Reseñas Totales</h6>
+                            <h4>@ViewBag.TotalResenas</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card card-hover text-white  mb-3 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <span class="material-symbols-outlined" style="font-size: 40px;">movie</span>
+                        <div class="text-end">
+                            <h6 class="card-title">Género Líder</h6>
+                            <h4>@ViewBag.GeneroPopular</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card shadow border-0 p-4 h-100">
+                    <h5 class="fw-bold mb-3 text-center">Distribución por Géneros</h5>
+                        <canvas id="graficoGeneros"></canvas>                    
+                </div>
+            </div>
+
+        </div>
+
+        @section Scripts {
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                
+                const labels = @Html.Raw(Json.Serialize(ViewBag.NombresGeneros));
+                const dataValues = @Html.Raw(Json.Serialize(ViewBag.CantidadesGeneros));
+
+                const ctx = document.getElementById('graficoGeneros').getContext('2d');
+
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Películas',
+                            data: dataValues,
+                            backgroundColor: [
+                                '#0d6efd', '#198754', '#ffc107', '#dc3545', '#0dcaf0', '#6610f2', '#fd7e14'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels:{
+                                    color: '#FFFFFF'
+                                }
+                            }
+                            
+                        }
+                    }
+                });
+            </script>
+        }
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="p-5 bg-body-tertiary border rounded-4 shadow-sm text-center">
+                    <h3>Gestión de Contenido</h3>
+                    <p>Usa los botones de abajo para administrar las películas y géneros de la plataforma.</p>
+                    <a asp-controller="Pelicula" asp-action="Index" class="btn btn-primary  px-4">Administrar Películas</a>
+                    <a asp-controller="Genero" asp-action="Index" class="btn btn-primary  px-4">Ver Géneros</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
