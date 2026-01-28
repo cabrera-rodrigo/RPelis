@@ -36,4 +36,6 @@ Este proyecto marcó mi inicio en el desarrollo web profesional. Algunos de los 
 <img width="45%" width="1278" height="1268" alt="Detalle pelicula" src="https://github.com/user-attachments/assets/077442ae-f317-4466-b5c4-b39181453a6b" />
 
 <img width="45%" width="1277" height="1268" alt="Paginas admin" src="https://github.com/user-attachments/assets/b28740bc-693c-4433-add1-bf4d07228203" />
+
+<img width="45%" width="881" height="617" alt="Envio de emails" src="https://github.com/user-attachments/assets/086eb2b7-ed8f-49ae-aa08-023666153ff4" />
 </p>
