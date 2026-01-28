@@ -28,4 +28,12 @@ Este proyecto marcó mi inicio en el desarrollo web profesional. Algunos de los 
 - Consumo y transformación de datos desde el controlador para alimentar gráficos en el frontend.
 - Resolución de conflictos en migraciones y despliegue en un entorno de hosting real.
 
-  
+  <p align="center">
+<img width="45%" width="1277" height="1263" alt="Inicio" src="https://github.com/user-attachments/assets/7ae68efe-5654-4dee-bc26-8457e14f0373" />
+
+<img width="45%" width="1277" height="1263" alt="Panel admin" src="https://github.com/user-attachments/assets/f3ad076a-f5ce-4297-90c3-9f96c6fffcea" />
+
+<img width="45%" width="1278" height="1268" alt="Detalle pelicula" src="https://github.com/user-attachments/assets/077442ae-f317-4466-b5c4-b39181453a6b" />
+
+<img width="45%" width="1277" height="1268" alt="Paginas admin" src="https://github.com/user-attachments/assets/b28740bc-693c-4433-add1-bf4d07228203" />
+</p>
